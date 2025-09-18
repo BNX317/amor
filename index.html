@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Heart Particles + TE AMO MAR + Contador 1 Nov Animado</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    html, body { margin:0; padding:0; height:100%; overflow:hidden; background:#000; }
+    canvas { position:absolute; inset:0; z-index:0; } /* Canvas interactivo */
+    svg { position:absolute; display:none; }
+    #countdown {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 32px;
+      font-weight: bold;
+      color: #ff4444;
+      text-shadow: 0 0 10px #ff0000, 0 0 20px #ff3399, 0 0 30px #ff66cc;
+      font-family: Arial, Helvetica, sans-serif;
+      z-index: 10;
+      text-align: center;
+      padding: 6px 10px;
+      animation: pulseGlow 1.2s infinite alternate;
+    }
+    @keyframes pulseGlow {
+      0% {
+        transform: translateX(-50%) scale(1);
+        text-shadow: 0 0 5px #ff0000, 0 0 15px #ff3399;
+      }
+      50% {
+        transform: translateX(-50%) scale(1.2);
+        text-shadow: 0 0 20px #ff0000, 0 0 40px #ff3399, 0 0 60px #ff66cc;
+      }
+      100% {
+        transform: translateX(-50%) scale(1);
+        text-shadow: 0 0 10px #ff0000, 0 0 30px #ff3399;
+      }
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); text-shadow: 0 0 10px #ff0000, 0 0 20px #ff3399, 0 0 30px #ff66cc; }
+      50% { transform: scale(1.2); text-shadow: 0 0 20px #ff0000, 0 0 40px #ff3399, 0 0 60px #ff66cc; }
+      100% { transform: scale(1); text-shadow: 0 0 10px #ff0000, 0 0 20px #ff3399, 0 0 30px #ff66cc; }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .birthday-message {
+      color: #ff3366;
+      font-size: 36px;
+      font-weight: bold;
+      text-align: center;
+      animation: pulse 2s infinite, fadeIn 1s ease-in forwards;
+    }
+  </style>
+</head>
+<body>
+<script>/* contador_solo_fix.js  —  Drop-in countdown that doesn't touch your animation */
+(function () {
+  // --- CONFIGURA AQUÍ LA FECHA (mes 0=enero, 10=noviembre) ---
+  var targetDate = new Date(2025, 10, 1, 0, 0, 0); // 1 Nov 2025 00:00:00
+
+  // Crea/inyecta el contenedor si no existe
+  var el = document.getElementById('countdown');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'countdown';
+    document.documentElement.appendChild(el); // fuera del flujo para pintar temprano
+  }
+
+  // Inyecta estilos mínimos sin tocar tu CSS existente
+  var style = document.createElement('style');
+  style.textContent = [
+    '#countdown{',
+    ' position:fixed; left:50%; transform:translateX(-50%);',
+    ' bottom: calc(env(safe-area-inset-bottom, 0px) + 20px);',
+    ' font: bold 32px/1.2 Arial, Helvetica, sans-serif; color:#ff4444;',
+    ' text-align:center; z-index:2147483647; pointer-events:none;',
+    ' text-shadow:0 0 10px #f00,0 0 20px #f39,0 0 30px #f6c;',
+    '}',
+    '@keyframes pulseGlow{',
+    ' 0%{ transform:translateX(-50%) scale(1); text-shadow:0 0 5px #f00,0 0 15px #f39;}',
+    ' 50%{ transform:translateX(-50%) scale(1.2); text-shadow:0 0 20px #f00,0 0 40px #f39,0 0 60px #f6c;}',
+    ' 100%{ transform:translateX(-50%) scale(1); text-shadow:0 0 10px #f00,0 0 30px #f39;}',
+    '}',
+    '#countdown{ animation:pulseGlow 1.2s infinite alternate }',
+    '.birthday-message{ color:#ff3366; font-size:clamp(24px,5vw,40px) !important; }'
+  ].join('');
+  document.head.appendChild(style);
+
+  function render(distance) {
+    if (distance <= 0) {
+      el.textContent = '❤️ FELIZ CUMPLEAÑOS MI AMOR AMOR ❤️';
+      el.className = 'birthday-message';
+      return true;
+    }
+    var days = Math.floor(distance / 86400000);
+    var hours = Math.floor((distance % 86400000) / 3600000);
+    var minutes = Math.floor((distance % 3600000) / 60000);
+    var seconds = Math.floor((distance % 60000) / 1000);
+    el.textContent = days + 'd ' + hours + 'h ' + minutes + 'm ' + seconds + 's';
+    return false;
+  }
+
+  function update() {
+    var now = Date.now();
+    var done = render(targetDate.getTime() - now);
+    if (done) clearInterval(t);
+  }
+
+  // Primer pintado inmediato (antes de scripts pesados)
+  requestAnimationFrame(update);
+  // Actualiza cada segundo
+  var t = setInterval(update, 1000);
+})();</script>
+  <!-- SVG HEART PATH (hidden, used to sample points) -->
+  <svg viewBox="0 0 600 552">
+    <path d="M300,107.77C284.68,55.67,239.76,0,162.31,0,64.83,0,0,82.08,0,171.71c0,.48,0,.95,0,1.43-.52,19.5,0,217.94,299.87,379.69v0l0,0,.05,0,0,0,0,0v0C600,391.08,600.48,192.64,600,173.14c0-.48,0-.95,0-1.43C600,82.08,535.17,0,437.69,0,360.24,0,315.32,55.67,300,107.77" fill="#ee5282"/>
+  </svg>
+
+  <div id="countdown"></div>
+
+  <!-- LIBS -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.136.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.136.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://unpkg.com/gsap@3/dist/gsap.min.js"></script>
+
+  <script>
+    console.clear();
+
+    /* BASIC THREE SETUP */
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 5000);
+    camera.position.z = 500;
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0x000000, 1);
+    document.body.appendChild(renderer.domElement);
+
+    const controlsWebGL = new THREE.OrbitControls(camera, renderer.domElement);
+
+    /* MASTER TIMELINE */
+    const tl = gsap.timeline({ repeat: -1, yoyo: true });
+
+    /* BUILD HEART PARTICLES FROM SVG PATH */
+    const path = document.querySelector("path");
+    const length = path.getTotalLength();
+
+    const vertices = [];
+    for (let i = 0; i < length; i += 0.1) {
+      const point = path.getPointAtLength(i);
+      const v = new THREE.Vector3(point.x, -point.y, 0);
+      v.x += (Math.random() - 0.5) * 30;
+      v.y += (Math.random() - 0.5) * 30;
+      v.z += (Math.random() - 0.5) * 70;
+      vertices.push(v);
+
+      tl.from(v, {
+        x: 600 / 2,
+        y: -552 / 2,
+        z: 0,
+        ease: "power2.inOut",
+        duration: "random(2,5)"
+      }, i * 0.002);
+    }
+
+    const geometry = new THREE.BufferGeometry().setFromPoints(vertices);
+    const material = new THREE.PointsMaterial({ color: 0xee5282, blending: THREE.AdditiveBlending, size: 3 });
+    const particles = new THREE.Points(geometry, material);
+    particles.position.x -= 600 / 2;
+    particles.position.y += 552 / 2;
+    scene.add(particles);
+
+    /* --- PARTICLE TEXT MADE OF SQUARES ("TE AMO MAR") --- */
+    function createSquareTexture(size=32) {
+      const c = document.createElement('canvas');
+      c.width = c.height = size;
+      const ctx = c.getContext('2d');
+      ctx.clearRect(0,0,size,size);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0,0,size,size);
+      const tex = new THREE.CanvasTexture(c);
+      tex.minFilter = THREE.LinearFilter;
+      tex.magFilter = THREE.LinearFilter;
+      tex.needsUpdate = true;
+      return tex;
+    }
+
+    function makeTextParticles(text) {
+      const W = 800, H = 280;
+      const canvas = document.createElement('canvas');
+      canvas.width = W; canvas.height = H;
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0,0,W,H);
+      ctx.fillStyle = '#ff0000';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.font = 'bold 120px Arial, Helvetica, sans-serif';
+      ctx.fillText(text, W/2, H/2);
+
+      const vertices = [];
+      const step = 6;
+      const pxToWorld = 0.38;
+      for (let y = 0; y < H; y += step) {
+        for (let x = 0; x < W; x += step) {
+          const a = ctx.getImageData(x, y, 1, 1).data[3];
+          if (a > 80) {
+            const vx = (x - W/2) * pxToWorld;
+            const vy = (H/2 - y) * pxToWorld;
+            const vz = (Math.random() - 0.5) * 8;
+            const v = new THREE.Vector3(vx, vy, vz);
+            vertices.push(v);
+            tl.from(v, {
+              x: 0, y: 0, z: 0,
+              ease: 'power2.inOut',
+              duration: 'random(2,4)'
+            }, (x + y) * 0.0002);
+          }
+        }
+      }
+
+      const geometry = new THREE.BufferGeometry().setFromPoints(vertices);
+      const squareMap = createSquareTexture(16);
+      const mat = new THREE.PointsMaterial({
+        map: squareMap,
+        transparent: true,
+        color: 0xff0000,
+        size: 6,
+        blending: THREE.AdditiveBlending
+      });
+      const points = new THREE.Points(geometry, mat);
+      scene.add(points);
+      points.position.y -= 20;
+      return { geometry, vertices };
+    }
+
+    const textParticles = makeTextParticles('TE AMO MAR');
+
+    gsap.fromTo(scene.rotation, { y: -0.2 }, { y: 0.2, repeat: -1, yoyo: true, ease: "power2.inOut", duration: 3 });
+
+    if (textParticles && textParticles.geometry) {
+      gsap.to(textParticles.geometry.attributes.position.array, {
+        duration: 1.5,
+        repeat: -1,
+        yoyo: true,
+        onUpdate: () => {
+          const verts = textParticles.vertices;
+          textParticles.geometry.setFromPoints(verts);
+        }
+      });
+    }
+
+    function render() {
+      requestAnimationFrame(render);
+      geometry.setFromPoints(vertices);
+      if (textParticles && textParticles.geometry && textParticles.vertices) {
+        textParticles.geometry.setFromPoints(textParticles.vertices);
+      }
+      renderer.render(scene, camera);
+    }
+    render();
+
+    window.addEventListener("resize", () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    /* CONTADOR AL 1 DE NOVIEMBRE (hora local) */
+    const targetDate = new Date("2025-11-01T00:00:00");
+
+    function updateCountdown() {
+      const now = new Date();
+      const distance = targetDate.getTime() - now.getTime();
+      const el = document.getElementById("countdown");
+      if (!el) return;
+
+      if (distance <= 0) {
+        el.innerHTML = "❤️ FELIZ CUMPLEAÑOS MI AMOR AMOR ❤️";
+        el.className = "birthday-message";
+        clearInterval(timerInterval);
+        return;
+      }
+
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      el.innerHTML = days + "d " + hours + "h " + minutes + "m " + seconds + "s";
+    }
+
+    const timerInterval = setInterval(updateCountdown, 1000);
+    updateCountdown();
+  </script>
+</body>
+</html>
